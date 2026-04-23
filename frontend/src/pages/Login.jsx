@@ -25,9 +25,18 @@ function Login() {
   }
 
   return (
-    <div style={{ maxWidth: '400px', margin: '60px auto', padding: '30px',
-      border: '1px solid #ddd', borderRadius: '12px' }}>
-      <h2>Se connecter</h2>
+    <div style={{ 
+  maxWidth: '400px', 
+  margin: '60px auto', 
+  padding: '40px',
+  border: '1px solid var(--color-border)', 
+  borderRadius: '8px',
+  background: 'var(--color-white)',
+  boxShadow: '0 4px 16px rgba(0,0,0,0.08)'
+}}>
+  <h2 style={{ color: 'var(--color-primary)', fontFamily: 'Georgia, serif' }}>
+    Se connecter
+  </h2>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -44,11 +53,20 @@ function Login() {
             value={formData.password} onChange={handleChange}
             required style={{ width: '100%', padding: '8px', marginTop: '4px' }}/>
         </div>
-        <button type="submit" style={{ width: '100%', padding: '10px',
-          background: '#333', color: 'white', border: 'none',
-          borderRadius: '8px', cursor: 'pointer' }}>
-          Se connecter
-        </button>
+        <button type="submit" style={{ 
+  width: '100%', 
+  padding: '12px',
+  background: 'var(--color-primary)', 
+  color: 'white', 
+  border: 'none',
+  borderRadius: '4px', 
+  cursor: 'pointer',
+  fontFamily: 'Georgia, serif',
+  fontSize: '16px',
+  letterSpacing: '0.5px'
+}}>
+  Se connecter
+</button>
       </form>
       <p style={{ textAlign: 'center', marginTop: '16px' }}>
         Pas encore de compte ? <a href="/register">S'inscrire</a>

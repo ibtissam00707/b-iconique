@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
+import { useCart } from '../context/CartContext';
 
 function Catalogue() {
-  // useState = une variable qui se met à jour automatiquement à l'écran
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
 
-  // useEffect = se lance une fois quand la page s'affiche
   useEffect(() => {
     api.get('/api/products')
       .then((response) => {
@@ -27,16 +27,39 @@ function Catalogue() {
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
         {products.map((product) => (
           <div key={product.id} style={{
-            border: '1px solid #ccc',
-            borderRadius: '8px',
-            padding: '16px',
-            width: '200px'
+            border: '1px solid #ddd',
+            borderRadius: '12px',
+            padding: '20px',
+            width: '220px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
           }}>
-            <h3>{product.name}</h3>
-            <p>{product.description}</p>
-            <p><strong>{product.price} €</strong></p>
-            <p>Stock : {product.stock}</p>
-            <p>Catégorie : {product.category}</p>
+            <h3 style={{ marginBottom: '8px' }}>{product.name}</h3>
+            <p style={{ color: '#666', fontSize: '14px' }}>{product.description}</p>
+            <p style={{ fontSize: '18px', fontWeight: 'bold', color: '#333' }}>
+              {product.price} €
+            </p>
+            <p style={{ fontSize: '13px', color: '#999' }}>
+              Stock : {product.stock}
+            </p>
+            <p style={{ fontSize: '13px', color: '#999' }}>
+              {product.category}
+            </p>
+            <button
+  onClick={() => addToCart(product)}
+  style={{
+    marginTop: '12px',
+    width: '100%',
+    padding: '10px',
+    background: 'var(--color-primary)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    fontFamily: 'Georgia, serif',
+    letterSpacing: '0.5px'
+  }}>
+  🛒 Ajouter au panier
+</button>
           </div>
         ))}
       </div>
