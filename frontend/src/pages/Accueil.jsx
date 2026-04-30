@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
-
+import Footer from '../components/Footer';
 function Accueil() {
   const [products, setProducts] = useState([]);
   const [hoveredId, setHoveredId] = useState(null);
@@ -73,7 +73,7 @@ function Accueil() {
             marginBottom: '16px',
             textTransform: 'uppercase'
           }}>
-            Collection 2024
+            Collection 2026
           </p>
           <h1 style={{
             fontSize: '52px',
@@ -373,96 +373,7 @@ function Accueil() {
       </div>
 
       {/* FOOTER */}
-      <footer style={{
-        background: 'var(--color-primary)',
-        color: 'white',
-        padding: '50px 40px 30px'
-      }}>
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '40px',
-          maxWidth: '1100px',
-          margin: '0 auto 40px'
-        }}>
-
-          {/* Colonne newsletter */}
-          <div style={{ maxWidth: '220px' }}>
-            <h4 style={{ marginBottom: '12px', letterSpacing: '1px', fontSize: '13px' }}>
-              Inscrivez-Vous !
-            </h4>
-            <p style={{ fontSize: '12px', opacity: '0.8', marginBottom: '16px', lineHeight: '1.6' }}>
-              Profitez de 5% de remise sur votre première commande
-            </p>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input
-                type="email"
-                placeholder="Votre adresse e-mail"
-                style={{
-                  flex: 1,
-                  padding: '8px',
-                  fontSize: '12px',
-                  border: 'none',
-                  borderRadius: '4px'
-                }}
-              />
-              <button style={{
-                padding: '8px 12px',
-                background: 'var(--color-text)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '12px'
-              }}>
-                OK
-              </button>
-            </div>
-          </div>
-
-          {/* Colonne Aide */}
-          <div>
-            <h4 style={{ marginBottom: '12px', letterSpacing: '1px', fontSize: '13px' }}>Aide</h4>
-            {['Catalogue', 'Centre d\'assistance', 'FAQ', 'Suivre ma commande'].map(l => (
-              <p key={l} style={{ fontSize: '12px', opacity: '0.8', marginBottom: '8px' }}>
-                <a href="#" style={{ color: 'white', textDecoration: 'none' }}>{l}</a>
-              </p>
-            ))}
-          </div>
-
-          {/* Colonne Légalité */}
-          <div>
-            <h4 style={{ marginBottom: '12px', letterSpacing: '1px', fontSize: '13px' }}>Légalité</h4>
-            {['Politique de retour', 'Politique de confidentialité', 'Conditions d\'utilisation'].map(l => (
-              <p key={l} style={{ fontSize: '12px', opacity: '0.8', marginBottom: '8px' }}>
-                <a href="#" style={{ color: 'white', textDecoration: 'none' }}>{l}</a>
-              </p>
-            ))}
-          </div>
-
-          {/* Colonne Boutique */}
-          <div>
-            <h4 style={{ marginBottom: '12px', letterSpacing: '1px', fontSize: '13px' }}>Boutique</h4>
-            {['Accueil', 'Catalogue', 'Colliers', 'Bagues', 'Bracelets'].map(l => (
-              <p key={l} style={{ fontSize: '12px', opacity: '0.8', marginBottom: '8px' }}>
-                <a href="#" style={{ color: 'white', textDecoration: 'none' }}>{l}</a>
-              </p>
-            ))}
-          </div>
-
-        </div>
-
-        <div style={{
-          borderTop: '1px solid rgba(255,255,255,0.2)',
-          paddingTop: '20px',
-          textAlign: 'center'
-        }}>
-          <p style={{ fontSize: '12px', opacity: '0.6' }}>
-            Copyright © 2024 B-Icônique. Tous droits réservés.
-          </p>
-        </div>
-      </footer>
+     <Footer />
 
     </div>
   );

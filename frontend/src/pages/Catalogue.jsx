@@ -7,7 +7,8 @@ function Catalogue() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hoveredId, setHoveredId] = useState(null);
-  const { addToCart } = useCart();
+  const [quantities, setQuantities] = useState({});
+  const { addToCart, notification } = useCart();
   const [searchParams] = useSearchParams();
   const categorieFiltre = searchParams.get('categorie');
 
@@ -15,6 +16,10 @@ function Catalogue() {
     api.get('/api/products')
       .then((response) => {
         setProducts(response.data);
+        // Initialiser les quantités à 1 pour chaque produit
+        const initialQty = {};
+        response.data.forEach(p => { initialQty[p.id] = 1; });
+        setQuantities(initialQty);
         setLoading(false);
       })
       .catch((error) => {
@@ -40,6 +45,26 @@ function Catalogue() {
   return (
     <div style={{ padding: '40px', fontFamily: 'Georgia, serif' }}>
 
+      {/* Notification ajout panier */}
+      {notification && (
+        <div style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          background: 'var(--color-primary)',
+          color: 'white',
+          padding: '14px 24px',
+          borderRadius: '8px',
+          fontSize: '14px',
+          fontFamily: 'Georgia, serif',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          zIndex: 1000,
+          animation: 'fadeIn 0.3s ease'
+        }}>
+          ✓ {notification}
+        </div>
+      )}
+
       {/* Titre */}
       <h1 style={{
         color: 'var(--color-text)',
@@ -53,7 +78,6 @@ function Catalogue() {
           : 'Tous nos bijoux'}
       </h1>
 
-      {/* Sous-titre */}
       <p style={{
         color: 'var(--color-text-light)',
         fontSize: '14px',
@@ -63,7 +87,7 @@ function Catalogue() {
         {produitsFiltres.length} article{produitsFiltres.length > 1 ? 's' : ''}
       </p>
 
-      {/* Filtres catégories */}
+      {/* Filtres */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
@@ -80,8 +104,7 @@ function Catalogue() {
         ].map(cat => {
           const isActive = cat.slug === categorieFiltre || (!cat.slug && !categorieFiltre);
           return (
-            <a
-              key={cat.label}
+            <a key={cat.label}
               href={cat.slug ? `/catalogue?categorie=${cat.slug}` : '/catalogue'}
               style={{
                 padding: '8px 20px',
@@ -92,7 +115,6 @@ function Catalogue() {
                 background: isActive ? 'var(--color-primary)' : 'transparent',
                 color: isActive ? 'white' : 'var(--color-text)',
                 border: `1px solid ${isActive ? 'var(--color-primary)' : 'var(--color-border)'}`,
-                transition: 'all 0.2s'
               }}>
               {cat.label}
             </a>
@@ -104,14 +126,14 @@ function Catalogue() {
       {produitsFiltres.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px', color: 'var(--color-text-light)' }}>
           <p style={{ fontSize: '18px', marginBottom: '16px' }}>Aucun produit dans cette catégorie.</p>
-          <a href="/catalogue" style={{ color: 'var(--color-primary)', textDecoration: 'none', fontSize: '14px' }}>
+          <a href="/catalogue" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>
             Voir tous les produits
           </a>
         </div>
       ) : (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
           gap: '28px',
           maxWidth: '1200px',
           margin: '0 auto'
@@ -129,117 +151,91 @@ function Catalogue() {
                 boxShadow: hoveredId === product.id
                   ? '0 8px 24px rgba(0,0,0,0.12)'
                   : '0 2px 8px rgba(0,0,0,0.05)',
-                transition: 'box-shadow 0.3s, transform 0.3s',
+                transition: 'all 0.3s',
                 transform: hoveredId === product.id ? 'translateY(-4px)' : 'translateY(0)'
               }}>
 
               {/* Image */}
-              <div style={{
-                width: '100%',
-                height: '260px',
-                overflow: 'hidden',
-                position: 'relative',
-                background: 'var(--color-background)'
-              }}>
+              <div style={{ width: '100%', height: '260px', overflow: 'hidden', position: 'relative', background: 'var(--color-background)' }}>
                 {product.image ? (
-                  <img
-                    src={product.image}
-                    alt={product.name}
+                  <img src={product.image} alt={product.name}
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
+                      width: '100%', height: '100%', objectFit: 'cover',
                       transition: 'transform 0.4s',
                       transform: hoveredId === product.id ? 'scale(1.05)' : 'scale(1)'
-                    }}
-                  />
+                    }} />
                 ) : (
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '64px'
-                  }}>
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '64px' }}>
                     💍
                   </div>
                 )}
-
-                {/* Badge catégorie */}
                 <div style={{
-                  position: 'absolute',
-                  top: '12px',
-                  left: '12px',
-                  background: 'white',
-                  color: 'var(--color-text-light)',
-                  fontSize: '11px',
-                  padding: '3px 8px',
-                  borderRadius: '20px',
-                  fontFamily: 'Georgia, serif',
-                  letterSpacing: '0.5px'
+                  position: 'absolute', top: '12px', left: '12px',
+                  background: 'white', color: 'var(--color-text-light)',
+                  fontSize: '11px', padding: '3px 8px', borderRadius: '20px',
+                  fontFamily: 'Georgia, serif', letterSpacing: '0.5px'
                 }}>
                   {product.category}
                 </div>
               </div>
 
-              {/* Infos produit */}
+              {/* Infos */}
               <div style={{ padding: '16px 18px 20px' }}>
-                <h3 style={{
-                  margin: '0 0 6px',
-                  fontSize: '15px',
-                  fontWeight: 'normal',
-                  color: 'var(--color-text)',
-                  fontFamily: 'Georgia, serif'
-                }}>
+                <h3 style={{ margin: '0 0 6px', fontSize: '15px', fontWeight: 'normal', color: 'var(--color-text)' }}>
                   {product.name}
                 </h3>
-                <p style={{
-                  color: 'var(--color-text-light)',
-                  fontSize: '12px',
-                  marginBottom: '12px',
-                  lineHeight: '1.5'
-                }}>
+                <p style={{ color: 'var(--color-text-light)', fontSize: '12px', marginBottom: '12px', lineHeight: '1.5' }}>
                   {product.description}
                 </p>
 
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '14px'
-                }}>
-                  <span style={{
-                    fontSize: '18px',
-                    fontWeight: 'bold',
-                    color: 'var(--color-primary)',
-                    fontFamily: 'Georgia, serif'
-                  }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 'bold', color: 'var(--color-primary)' }}>
                     {product.price} €
                   </span>
-                  <span style={{
-                    fontSize: '11px',
-                    color: product.stock > 5 ? '#27ae60' : '#e74c3c',
-                    fontFamily: 'Georgia, serif'
-                  }}>
+                  <span style={{ fontSize: '11px', color: product.stock > 5 ? '#27ae60' : '#e74c3c' }}>
                     {product.stock > 5 ? '✓ En stock' : `Plus que ${product.stock} !`}
                   </span>
                 </div>
 
+                {/* Sélecteur de quantité */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '13px', color: 'var(--color-text-light)' }}>Quantité :</span>
+                  <button
+                    onClick={() => setQuantities(prev => ({ ...prev, [product.id]: Math.max(1, (prev[product.id] || 1) - 1) }))}
+                    style={{
+                      width: '26px', height: '26px',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '4px', background: 'var(--color-background)',
+                      cursor: 'pointer', fontSize: '16px'
+                    }}>
+                    −
+                  </button>
+                  <span style={{ fontSize: '14px', minWidth: '20px', textAlign: 'center' }}>
+                    {quantities[product.id] || 1}
+                  </span>
+                  <button
+                    onClick={() => setQuantities(prev => ({ ...prev, [product.id]: (prev[product.id] || 1) + 1 }))}
+                    style={{
+                      width: '26px', height: '26px',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '4px', background: 'var(--color-background)',
+                      cursor: 'pointer', fontSize: '16px'
+                    }}>
+                    +
+                  </button>
+                </div>
+
+                {/* Bouton ajouter */}
                 <button
-                  onClick={() => addToCart(product)}
+                  onClick={() => addToCart(product, quantities[product.id] || 1)}
                   style={{
-                    width: '100%',
-                    padding: '11px',
+                    width: '100%', padding: '11px',
                     background: hoveredId === product.id ? 'var(--color-primary)' : 'transparent',
                     color: hoveredId === product.id ? 'white' : 'var(--color-primary)',
                     border: '1px solid var(--color-primary)',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontFamily: 'Georgia, serif',
-                    fontSize: '13px',
-                    letterSpacing: '0.5px',
-                    transition: 'all 0.2s'
+                    borderRadius: '4px', cursor: 'pointer',
+                    fontFamily: 'Georgia, serif', fontSize: '13px',
+                    letterSpacing: '0.5px', transition: 'all 0.2s'
                   }}>
                   Ajouter au panier
                 </button>

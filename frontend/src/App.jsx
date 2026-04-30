@@ -1,144 +1,75 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import Accueil from './pages/Accueil';
 import Catalogue from './pages/Catalogue';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Panier from './pages/Panier';
+import Commande from './pages/Commande';
 import Admin from './pages/Admin';
+import NotFound from './pages/NotFound';
+import FAQ from './pages/FAQ';
+import PolitiqueRetour from './pages/PolitiqueRetour';
+import PolitiqueConfidentialite from './pages/PolitiqueConfidentialite';
+import CGU from './pages/CGU';
+import Contact from './pages/Contact';
 import { useCart } from './context/CartContext';
 
-function App() {
+function Navigation() {
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const { cartCount } = useCart();
+  const { cartCount, notification } = useCart();
 
   function handleLogout() {
     localStorage.removeItem('token');
-    window.location.href = '/';
+    navigate('/');
   }
 
   return (
-    <BrowserRouter>
+    <>
+      {notification && (
+        <div style={{
+          position: 'fixed', top: '20px', right: '20px',
+          background: '#8B2635', color: 'white',
+          padding: '14px 24px', borderRadius: '8px', fontSize: '14px',
+          fontFamily: 'Georgia, serif', boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          zIndex: 9999
+        }}>
+          {notification}
+        </div>
+      )}
 
-      {/* Barre livraison */}
       <div style={{
-        background: 'var(--color-primary)',
-        color: 'white',
-        textAlign: 'center',
-        padding: '8px',
-        fontSize: '12px',
-        letterSpacing: '1px',
-        fontFamily: 'Georgia, serif'
+        background: '#8B2635', color: 'white', textAlign: 'center',
+        padding: '8px', fontSize: '12px', letterSpacing: '1px', fontFamily: 'Georgia, serif'
       }}>
-        Livraison gratuite en France dès 35€ — Europe dès 50€
+        Livraison gratuite dès 50€ — 4.99€ en dessous — Europe uniquement
       </div>
 
-      {/* Header */}
-      <header style={{
-        background: 'var(--color-white)',
-        borderBottom: '1px solid var(--color-border)',
-      }}>
-
-        {/* Logo + icônes */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '16px 40px',
-        }}>
-          {/* Logo */}
-          <Link to="/" style={{
-            textDecoration: 'none',
-            color: 'var(--color-primary)',
-            fontSize: '26px',
-            fontFamily: 'Georgia, serif',
-            fontWeight: 'bold',
-            letterSpacing: '3px'
-          }}>
+      <header style={{ background: 'white', borderBottom: '1px solid #E0D8D0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 40px' }}>
+          <Link to="/" style={{ textDecoration: 'none', color: '#8B2635', fontSize: '26px', fontFamily: 'Georgia, serif', fontWeight: 'bold', letterSpacing: '3px' }}>
             B-Icônique
           </Link>
-
-          {/* Icônes droite */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '20px'
-          }}>
-
-            {/* Lien Admin — visible seulement si connecté */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             {token && (
-              <Link to="/admin" style={{
-                textDecoration: 'none',
-                color: 'var(--color-primary)',
-                fontSize: '13px',
-                fontFamily: 'Georgia, serif',
-                fontWeight: 'bold',
-                border: '1px solid var(--color-primary)',
-                padding: '6px 14px',
-                borderRadius: '4px'
-              }}>
+              <Link to="/admin" style={{ textDecoration: 'none', color: '#8B2635', fontSize: '13px', fontFamily: 'Georgia, serif', fontWeight: 'bold', border: '1px solid #8B2635', padding: '6px 14px', borderRadius: '4px' }}>
                 ⚙️ Admin
               </Link>
             )}
-
             {token ? (
-              <button onClick={handleLogout} style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '13px',
-                color: 'var(--color-text-light)',
-                fontFamily: 'Georgia, serif',
-              }}>
+              <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '13px', color: '#666', fontFamily: 'Georgia, serif' }}>
                 Se déconnecter
               </button>
             ) : (
               <>
-                <Link to="/login" style={{
-                  textDecoration: 'none',
-                  color: 'var(--color-text-light)',
-                  fontSize: '13px',
-                  fontFamily: 'Georgia, serif'
-                }}>
-                  Se connecter
-                </Link>
-                <Link to="/register" style={{
-                  textDecoration: 'none',
-                  background: 'var(--color-primary)',
-                  color: 'white',
-                  padding: '7px 16px',
-                  borderRadius: '4px',
-                  fontSize: '13px',
-                  fontFamily: 'Georgia, serif'
-                }}>
-                  S'inscrire
-                </Link>
+                <Link to="/login" style={{ textDecoration: 'none', color: '#666', fontSize: '13px', fontFamily: 'Georgia, serif' }}>Se connecter</Link>
+                <Link to="/register" style={{ textDecoration: 'none', background: '#8B2635', color: 'white', padding: '7px 16px', borderRadius: '4px', fontSize: '13px', fontFamily: 'Georgia, serif' }}>S'inscrire</Link>
               </>
             )}
-
-            {/* Panier */}
-            <Link to="/panier" style={{
-              textDecoration: 'none',
-              color: 'var(--color-text)',
-              fontSize: '13px',
-              fontFamily: 'Georgia, serif',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              position: 'relative'
-            }}>
+            <Link to="/panier" style={{ textDecoration: 'none', color: '#333', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }}>
               🛒
               {cartCount > 0 && (
-                <span style={{
-                  background: 'var(--color-primary)',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '18px',
-                  height: '18px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '11px'
-                }}>
+                <span style={{ background: '#8B2635', color: 'white', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px' }}>
                   {cartCount}
                 </span>
               )}
@@ -146,15 +77,7 @@ function App() {
           </div>
         </div>
 
-        {/* Menu navigation */}
-        <nav style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '36px',
-          padding: '10px 40px',
-          borderTop: '1px solid var(--color-border)',
-          background: 'var(--color-background)'
-        }}>
+        <nav style={{ display: 'flex', justifyContent: 'center', gap: '36px', padding: '10px 40px', borderTop: '1px solid #E0D8D0', background: '#F5F0EB' }}>
           {[
             { label: 'Accueil', to: '/' },
             { label: 'Catalogue', to: '/catalogue' },
@@ -163,30 +86,35 @@ function App() {
             { label: 'Bracelets', to: '/catalogue?categorie=bracelets' },
             { label: "Boucles d'oreilles", to: '/catalogue?categorie=boucles-oreilles' },
           ].map(item => (
-            <Link key={item.label} to={item.to} style={{
-              textDecoration: 'none',
-              color: 'var(--color-text)',
-              fontSize: '13px',
-              fontFamily: 'Georgia, serif',
-              letterSpacing: '0.5px',
-            }}>
+            <Link key={item.label} to={item.to} style={{ textDecoration: 'none', color: '#333', fontSize: '13px', fontFamily: 'Georgia, serif' }}>
               {item.label}
             </Link>
           ))}
         </nav>
-
       </header>
+    </>
+  );
+}
 
-      {/* Pages */}
+function App() {
+  return (
+    <BrowserRouter>
+      <Navigation />
       <Routes>
-        <Route path="/"          element={<Accueil />} />
-        <Route path="/catalogue" element={<Catalogue />} />
-        <Route path="/login"     element={<Login />} />
-        <Route path="/register"  element={<Register />} />
-        <Route path="/panier"    element={<Panier />} />
-        <Route path="/admin"     element={<Admin />} />
+        <Route path="/"                      element={<Accueil />} />
+        <Route path="/catalogue"             element={<Catalogue />} />
+        <Route path="/login"                 element={<Login />} />
+        <Route path="/register"              element={<Register />} />
+        <Route path="/panier"                element={<Panier />} />
+        <Route path="/commande"              element={<Commande />} />
+        <Route path="/admin"                 element={<Admin />} />
+        <Route path="/faq"                   element={<FAQ />} />
+        <Route path="/politique-retour"      element={<PolitiqueRetour />} />
+        <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />
+        <Route path="/cgu"                   element={<CGU />} />
+        <Route path="/contact"               element={<Contact />} />
+        <Route path="*"                      element={<NotFound />} />
       </Routes>
-
     </BrowserRouter>
   );
 }
