@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+
+  database:
+    image: mysql:8.0
+    container_name: b_iconique_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: b_iconique
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    container_name: b_iconique_backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: "mysql://root:root@database:3306/b_iconique"
+    depends_on:
+      - database
+    volumes:
+      - ./backend:/var/www/backend
+
+  frontend:
+    build: ./frontend
+    container_name: b_iconique_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  db_data:
