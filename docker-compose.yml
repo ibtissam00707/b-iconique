@@ -33,8 +33,9 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
 
 volumes:
   db_data:
