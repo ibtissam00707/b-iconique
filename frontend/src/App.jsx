@@ -84,7 +84,7 @@ function Navigation() {
             { label: 'Colliers', to: '/catalogue?categorie=colliers' },
             { label: 'Bagues', to: '/catalogue?categorie=bagues' },
             { label: 'Bracelets', to: '/catalogue?categorie=bracelets' },
-            { label: "Boucles d'oreilles", to: '/catalogue?categorie=boucles-oreilles' },
+            { label: "Boucles d'oreilles", to: '/catalogue?categorie=boucles-d-oreilles' },
           ].map(item => (
             <Link key={item.label} to={item.to} style={{ textDecoration: 'none', color: '#333', fontSize: '13px', fontFamily: 'Georgia, serif' }}>
               {item.label}
