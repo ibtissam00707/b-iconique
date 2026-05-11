@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__browser_batch",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__javascript_tool",
+      "Bash(powershell.exe -Command \"Set-Clipboard -Value 'Copyright \\\\u00A9 2026 B-Ic\\\\u00F4nique. Tous droits r\\\\u00E9serv\\\\u00E9s.'\")",
+      "PowerShell(Set-Clipboard -Value \"Copyright � 2026 B-Ic�nique. Tous droits r�serv�s.\")",
+      "PowerShell(Set-Clipboard -Value \"Conditions d'utilisation\")",
+      "PowerShell(Set-Clipboard -Value \"Politique de confidentialit�\")",
+      "PowerShell(Set-Clipboard -Value \"Boucles d'oreilles\")",
+      "PowerShell(Set-Clipboard -Value \"Colliers\")"
+    ]
+  }
+}

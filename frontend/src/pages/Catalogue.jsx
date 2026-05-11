@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
+import { useFavoris } from '../context/FavorisContext';
+import { isLoggedIn } from '../utils/auth';
 
 function Catalogue() {
   const [products, setProducts] = useState([]);
@@ -9,6 +11,7 @@ function Catalogue() {
   const [hoveredId, setHoveredId] = useState(null);
   const [quantities, setQuantities] = useState({});
   const { addToCart, notification } = useCart();
+  const { toggleFavori, isFavori } = useFavoris();
   const [searchParams] = useSearchParams();
   const categorieFiltre = searchParams.get('categorie');
 
@@ -16,7 +19,6 @@ function Catalogue() {
     api.get('/api/products')
       .then((response) => {
         setProducts(response.data);
-        // Initialiser les quantités à 1 pour chaque produit
         const initialQty = {};
         response.data.forEach(p => { initialQty[p.id] = 1; });
         setQuantities(initialQty);
@@ -45,7 +47,6 @@ function Catalogue() {
   return (
     <div style={{ padding: '40px', fontFamily: 'Georgia, serif' }}>
 
-      {/* Notification ajout panier */}
       {notification && (
         <div style={{
           position: 'fixed',
@@ -65,7 +66,6 @@ function Catalogue() {
         </div>
       )}
 
-      {/* Titre */}
       <h1 style={{
         color: 'var(--color-text)',
         fontWeight: 'normal',
@@ -87,7 +87,6 @@ function Catalogue() {
         {produitsFiltres.length} article{produitsFiltres.length > 1 ? 's' : ''}
       </p>
 
-      {/* Filtres */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
@@ -104,7 +103,8 @@ function Catalogue() {
         ].map(cat => {
           const isActive = cat.slug === categorieFiltre || (!cat.slug && !categorieFiltre);
           return (
-            <a key={cat.label}
+            <a
+              key={cat.label}
               href={cat.slug ? `/catalogue?categorie=${cat.slug}` : '/catalogue'}
               style={{
                 padding: '8px 20px',
@@ -115,14 +115,14 @@ function Catalogue() {
                 background: isActive ? 'var(--color-primary)' : 'transparent',
                 color: isActive ? 'white' : 'var(--color-text)',
                 border: `1px solid ${isActive ? 'var(--color-primary)' : 'var(--color-border)'}`,
-              }}>
+              }}
+            >
               {cat.label}
             </a>
           );
         })}
       </div>
 
-      {/* Grille produits */}
       {produitsFiltres.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px', color: 'var(--color-text-light)' }}>
           <p style={{ fontSize: '18px', marginBottom: '16px' }}>Aucun produit dans cette catégorie.</p>
@@ -153,37 +153,71 @@ function Catalogue() {
                   : '0 2px 8px rgba(0,0,0,0.05)',
                 transition: 'all 0.3s',
                 transform: hoveredId === product.id ? 'translateY(-4px)' : 'translateY(0)'
-              }}>
+              }}
+            >
 
-              {/* Image */}
               <div style={{ width: '100%', height: '260px', overflow: 'hidden', position: 'relative', background: 'var(--color-background)' }}>
                 {product.image ? (
-                  <img src={product.image} alt={product.name}
+                  <img
+                    src={product.image}
+                    alt={product.name}
                     style={{
-                      width: '100%', height: '100%', objectFit: 'cover',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
                       transition: 'transform 0.4s',
                       transform: hoveredId === product.id ? 'scale(1.05)' : 'scale(1)'
-                    }} />
+                    }}
+                  />
                 ) : (
                   <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '64px' }}>
                     💍
                   </div>
                 )}
+
                 <div style={{
-                  position: 'absolute', top: '12px', left: '12px',
-                  background: 'white', color: 'var(--color-text-light)',
-                  fontSize: '11px', padding: '3px 8px', borderRadius: '20px',
-                  fontFamily: 'Georgia, serif', letterSpacing: '0.5px'
+                  position: 'absolute',
+                  top: '12px',
+                  left: '12px',
+                  background: 'white',
+                  color: 'var(--color-text-light)',
+                  fontSize: '11px',
+                  padding: '3px 8px',
+                  borderRadius: '20px',
+                  fontFamily: 'Georgia, serif',
+                  letterSpacing: '0.5px'
                 }}>
                   {product.category}
                 </div>
+
+                {isLoggedIn() && (
+                  <button
+                    onClick={() => toggleFavori(product)}
+                    style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      border: 'none',
+                      background: 'white',
+                      color: isFavori(product.id) ? '#8B2635' : '#ccc',
+                      fontSize: '20px',
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                    }}
+                  >
+                    {isFavori(product.id) ? '❤️' : '🤍'}
+                  </button>
+                )}
               </div>
 
-              {/* Infos */}
               <div style={{ padding: '16px 18px 20px' }}>
                 <h3 style={{ margin: '0 0 6px', fontSize: '15px', fontWeight: 'normal', color: 'var(--color-text)' }}>
                   {product.name}
                 </h3>
+
                 <p style={{ color: 'var(--color-text-light)', fontSize: '12px', marginBottom: '12px', lineHeight: '1.5' }}>
                   {product.description}
                 </p>
@@ -197,46 +231,60 @@ function Catalogue() {
                   </span>
                 </div>
 
-                {/* Sélecteur de quantité */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                   <span style={{ fontSize: '13px', color: 'var(--color-text-light)' }}>Quantité :</span>
+
                   <button
                     onClick={() => setQuantities(prev => ({ ...prev, [product.id]: Math.max(1, (prev[product.id] || 1) - 1) }))}
                     style={{
-                      width: '26px', height: '26px',
+                      width: '26px',
+                      height: '26px',
                       border: '1px solid var(--color-border)',
-                      borderRadius: '4px', background: 'var(--color-background)',
-                      cursor: 'pointer', fontSize: '16px'
-                    }}>
+                      borderRadius: '4px',
+                      background: 'var(--color-background)',
+                      cursor: 'pointer',
+                      fontSize: '16px'
+                    }}
+                  >
                     −
                   </button>
+
                   <span style={{ fontSize: '14px', minWidth: '20px', textAlign: 'center' }}>
                     {quantities[product.id] || 1}
                   </span>
+
                   <button
                     onClick={() => setQuantities(prev => ({ ...prev, [product.id]: (prev[product.id] || 1) + 1 }))}
                     style={{
-                      width: '26px', height: '26px',
+                      width: '26px',
+                      height: '26px',
                       border: '1px solid var(--color-border)',
-                      borderRadius: '4px', background: 'var(--color-background)',
-                      cursor: 'pointer', fontSize: '16px'
-                    }}>
+                      borderRadius: '4px',
+                      background: 'var(--color-background)',
+                      cursor: 'pointer',
+                      fontSize: '16px'
+                    }}
+                  >
                     +
                   </button>
                 </div>
 
-                {/* Bouton ajouter */}
                 <button
                   onClick={() => addToCart(product, quantities[product.id] || 1)}
                   style={{
-                    width: '100%', padding: '11px',
+                    width: '100%',
+                    padding: '11px',
                     background: hoveredId === product.id ? 'var(--color-primary)' : 'transparent',
                     color: hoveredId === product.id ? 'white' : 'var(--color-primary)',
                     border: '1px solid var(--color-primary)',
-                    borderRadius: '4px', cursor: 'pointer',
-                    fontFamily: 'Georgia, serif', fontSize: '13px',
-                    letterSpacing: '0.5px', transition: 'all 0.2s'
-                  }}>
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontFamily: 'Georgia, serif',
+                    fontSize: '13px',
+                    letterSpacing: '0.5px',
+                    transition: 'all 0.2s'
+                  }}
+                >
                   Ajouter au panier
                 </button>
               </div>
@@ -249,4 +297,3 @@ function Catalogue() {
 }
 
 export default Catalogue;
-

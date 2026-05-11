@@ -23,7 +23,7 @@ function Accueil() {
     {
       name: 'Bracelets',
       slug: 'bracelets',
-      image: 'https://images.unsplash.com/photo-1573408301185-9519f94815b4?w=400&q=80'
+      image: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&q=80'
     },
     {
       name: 'Bagues',
