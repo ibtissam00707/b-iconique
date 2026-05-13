@@ -1,24 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import { isAdmin } from '../utils/auth';
 
 function Admin() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', description: '', price: '', stock: '', image: ''
+    name: '', description: '', price: '', stock: '', image: '', categoryId: ''
   });
   const navigate = useNavigate();
 
-  // Vérifie que l'utilisateur est connecté
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/login');
+    if (!isAdmin()) {
+      navigate('/');
       return;
     }
     chargerProduits();
+    api.get('/api/categories').then(res => setCategories(res.data));
   }, []);
 
   function chargerProduits() {
@@ -38,12 +39,15 @@ function Admin() {
     e.preventDefault();
     try {
       await api.post('/api/admin/products', {
-        ...formData,
+        name: formData.name,
+        description: formData.description,
         price: parseFloat(formData.price),
-        stock: parseInt(formData.stock)
+        stock: parseInt(formData.stock),
+        image: formData.image,
+        categoryId: formData.categoryId ? parseInt(formData.categoryId) : null
       });
       setShowForm(false);
-      setFormData({ name: '', description: '', price: '', stock: '', image: '' });
+      setFormData({ name: '', description: '', price: '', stock: '', image: '', categoryId: '' });
       chargerProduits();
       alert('Produit ajouté avec succès !');
     } catch (err) {
@@ -105,7 +109,7 @@ function Admin() {
                 { label: 'Nom du produit', name: 'name', type: 'text' },
                 { label: 'Prix (€)', name: 'price', type: 'number' },
                 { label: 'Stock', name: 'stock', type: 'number' },
-                { label: 'URL de l\'image', name: 'image', type: 'text' },
+                { label: "URL de l'image", name: 'image', type: 'text' },
               ].map(field => (
                 <div key={field.name}>
                   <label style={{ fontSize: '13px', color: 'var(--color-text-light)', display: 'block', marginBottom: '6px' }}>
@@ -116,19 +120,36 @@ function Admin() {
                     name={field.name}
                     value={formData[field.name]}
                     onChange={handleChange}
-                    required
+                    required={field.name !== 'image'}
                     style={{
-                      width: '100%',
-                      padding: '10px',
-                      border: '1px solid var(--color-border)',
-                      borderRadius: '4px',
-                      fontFamily: 'Georgia, serif',
-                      fontSize: '14px',
-                      boxSizing: 'border-box'
+                      width: '100%', padding: '10px',
+                      border: '1px solid var(--color-border)', borderRadius: '4px',
+                      fontFamily: 'Georgia, serif', fontSize: '14px', boxSizing: 'border-box'
                     }}
                   />
                 </div>
               ))}
+              <div>
+                <label style={{ fontSize: '13px', color: 'var(--color-text-light)', display: 'block', marginBottom: '6px' }}>
+                  Catégorie
+                </label>
+                <select
+                  name="categoryId"
+                  value={formData.categoryId}
+                  onChange={handleChange}
+                  style={{
+                    width: '100%', padding: '10px',
+                    border: '1px solid var(--color-border)', borderRadius: '4px',
+                    fontFamily: 'Georgia, serif', fontSize: '14px', boxSizing: 'border-box',
+                    background: 'white'
+                  }}
+                >
+                  <option value="">-- Sans catégorie --</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
             {/* Description pleine largeur */}

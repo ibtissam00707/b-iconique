@@ -15,17 +15,19 @@ import CGU from './pages/CGU';
 import Contact from './pages/Contact';
 
 import { useCart, CartProvider } from './context/CartContext';
-import { FavorisProvider } from './context/FavorisContext';
+import { FavorisProvider, useFavoris } from './context/FavorisContext';
 
 import { isAdmin, isLoggedIn } from './utils/auth';
 
 function Navigation() {
   const navigate = useNavigate();
   const { cartCount, notification } = useCart();
+  const { favoris } = useFavoris();
+  const favorisCount = favoris.length;
 
   function handleLogout() {
     localStorage.removeItem('token');
-    navigate('/');
+    window.location.href = '/';
   }
 
   return (
@@ -124,10 +126,28 @@ function Navigation() {
                       textDecoration: 'none',
                       color: '#8B2635',
                       fontSize: '13px',
-                      fontFamily: 'Georgia, serif'
+                      fontFamily: 'Georgia, serif',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
                     }}
                   >
                     ❤️ Mes Favoris
+                    {favorisCount > 0 && (
+                      <span style={{
+                        background: '#8B2635',
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '18px',
+                        height: '18px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '11px'
+                      }}>
+                        {favorisCount}
+                      </span>
+                    )}
                   </Link>
                 )}
 

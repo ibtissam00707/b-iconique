@@ -19,10 +19,12 @@ function Register() {
     e.preventDefault();
     try {
       await api.post('/api/register', formData);
-      setMessage('Compte créé avec succès ! Vous pouvez vous connecter.');
+      setMessage('Compte créé avec succès ! Redirection...');
       setError('');
+      setTimeout(() => { window.location.href = '/login'; }, 1500);
     } catch (err) {
-      setError('Erreur lors de l\'inscription. Vérifiez vos informations.');
+      const msg = err.response?.data?.message;
+      setError(msg || 'Erreur lors de l\'inscription. Vérifiez vos informations.');
       setMessage('');
     }
   }

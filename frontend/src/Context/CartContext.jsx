@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { getUserKey } from '../utils/auth';
 
 const CartContext = createContext();
 
@@ -6,12 +7,16 @@ export function useCart() {
   return useContext(CartContext);
 }
 
+function getCartKey() {
+  const k = getUserKey();
+  return k ? `cart_${k}` : 'cart_guest';
+}
+
 export function CartProvider({ children }) {
-  // Panier persisté dans localStorage
+  const [cartKey, setCartKey] = useState(getCartKey);
   const [cart, setCart] = useState(() => {
     try {
-      const saved = localStorage.getItem('biconique_cart');
-      return saved ? JSON.parse(saved) : [];
+      return JSON.parse(localStorage.getItem(getCartKey())) || [];
     } catch {
       return [];
     }
@@ -20,10 +25,27 @@ export function CartProvider({ children }) {
   const [notification, setNotification] = useState(null);
   const timerRef = useRef(null);
 
-  // Sauvegarde automatique à chaque changement
   useEffect(() => {
-    localStorage.setItem('biconique_cart', JSON.stringify(cart));
-  }, [cart]);
+    const handleFocus = () => {
+      const newKey = getCartKey();
+      if (newKey !== cartKey) {
+        setCartKey(newKey);
+        try {
+          setCart(JSON.parse(localStorage.getItem(newKey)) || []);
+        } catch { setCart([]); }
+      }
+    };
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('storage', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('storage', handleFocus);
+    };
+  }, [cartKey]);
+
+  useEffect(() => {
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+  }, [cart, cartKey]);
 
   function addToCart(product, quantity = 1) {
     setCart(prev => {
@@ -61,7 +83,7 @@ export function CartProvider({ children }) {
 
   function clearCart() {
     setCart([]);
-    localStorage.removeItem('biconique_cart');
+    localStorage.removeItem(cartKey);
   }
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
