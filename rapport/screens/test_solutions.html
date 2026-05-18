@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tests Backend — Solutions appliquées</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #f5f0eb;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    padding: 32px;
+    min-height: 100vh;
+  }
+  h1 {
+    color: #8B2635;
+    font-size: 20px;
+    font-family: Georgia, serif;
+    margin-bottom: 6px;
+    border-bottom: 2px solid #8B2635;
+    padding-bottom: 10px;
+  }
+  .subtitle {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+  .step {
+    background: white;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border-left: 4px solid #8B2635;
+  }
+  .step-header {
+    padding: 12px 18px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #f0ebe5;
+  }
+  .step-num {
+    background: #8B2635;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .step-title {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 14px;
+  }
+  .step-tag {
+    background: #f5f0eb;
+    color: #8B2635;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-left: auto;
+  }
+  .step-body {
+    padding: 14px 18px;
+  }
+  .problem {
+    background: #fff5f5;
+    border: 1px solid #fcc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: #c0392b;
+    margin-bottom: 10px;
+  }
+  .problem::before { content: "⚠️  Problème : "; font-weight: 600; }
+  .solution {
+    background: #f0faf5;
+    border: 1px solid #b2dfcc;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    color: #1a5c38;
+    margin-bottom: 10px;
+  }
+  .solution::before { content: "✅  Solution : "; font-weight: 600; }
+  .code-block {
+    background: #1e1e1e;
+    color: #f0f0f0;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-top: 8px;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  .kw { color: #569cd6; }
+  .str { color: #ce9178; }
+  .cmt { color: #6a9955; }
+  .cmd-inline {
+    background: #1e1e1e;
+    color: #06d6a0;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .result-bar {
+    background: #1a5c38;
+    color: white;
+    padding: 14px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .result-ok {
+    font-size: 22px;
+    font-weight: bold;
+    color: #06d6a0;
+    font-family: 'Consolas', monospace;
+  }
+  .result-detail { color: #a8e6cf; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<h1>Tests Backend PHPUnit — Problèmes & Solutions</h1>
+<div class="subtitle">AuthControllerTest.php — 7 tests, 13 assertions</div>
+
+<!-- Étape 1 -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">1</div>
+    <div class="step-title">Base de données de test inexistante</div>
+    <span class="step-tag">DB</span>
+  </div>
+  <div class="step-body">
+    <div class="problem">Symfony cherche <code>b_iconique_test</code> — SQLSTATE[HY000] [1049] Unknown database</div>
+    <div class="solution">Création manuelle de la BDD de test dans le container MySQL</div>
+    <div class="code-block"><span style="color:#aaa">$</span> docker exec b_iconique_db mysql -uroot -proot -e \<br>&nbsp;&nbsp;<span class="str">"CREATE DATABASE IF NOT EXISTS b_iconique_test CHARACTER SET utf8mb4;"</span></div>
+  </div>
+</div>
+
+<!-- Étape 2 -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">2</div>
+    <div class="step-title">DATABASE_URL manquant dans .env.test</div>
+    <span class="step-tag">.env</span>
+  </div>
+  <div class="step-body">
+    <div class="problem">Le fichier .env.test ne définit pas DATABASE_URL → Symfony utilise le host local 127.0.0.1 inaccessible depuis Docker</div>
+    <div class="solution">Ajout de DATABASE_URL pointant vers le service Docker <code>database:3306</code></div>
+    <div class="code-block"><span class="cmt"># .env.test</span><br>KERNEL_CLASS=<span class="str">'App\Kernel'</span><br>APP_SECRET=<span class="str">'$ecretf0rt3st'</span><br><span style="color:#06d6a0">DATABASE_URL=<span class="str">"mysql://root:root@database:3306/b_iconique_test?serverVersion=8.0"</span></span></div>
+  </div>
+</div>
+
+<!-- Étape 3 -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">3</div>
+    <div class="step-title">Schéma de BDD absent — migrations</div>
+    <span class="step-tag">Doctrine</span>
+  </div>
+  <div class="step-body">
+    <div class="problem">Tables inexistantes dans b_iconique_test → toutes les requêtes ORM échouent</div>
+    <div class="solution">Exécution des migrations Doctrine sur l'environnement de test</div>
+    <div class="code-block"><span style="color:#aaa">$</span> docker exec b_iconique_backend php bin/console \<br>&nbsp;&nbsp;doctrine:migrations:migrate --env=test --no-interaction<br><br><span style="color:#06d6a0">[OK] Successfully migrated to version: Version20260423105454</span></div>
+  </div>
+</div>
+
+<!-- Étape 4 -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">4</div>
+    <div class="step-title">Données de test manquantes (fixtures)</div>
+    <span class="step-tag">Fixtures</span>
+  </div>
+  <div class="step-body">
+    <div class="problem">T12 attend au moins 1 produit · T18 nécessite un compte admin test@biconique.com</div>
+    <div class="solution">Insertion des données minimales via SQL dans b_iconique_test</div>
+    <div class="code-block"><span class="cmt">-- Catégories + 1 produit</span><br>INSERT INTO category (name, slug) VALUES (<span class="str">'Colliers'</span>, <span class="str">'colliers'</span>);<br>INSERT INTO product (name, price, stock, category_id) VALUES (<span class="str">'Collier Test'</span>, 29.99, 10, 1);<br><br><span class="cmt">-- Compte admin (password hashé bcrypt)</span><br>INSERT INTO user (email, password, roles, first_name, last_name)<br>VALUES (<span class="str">'test@biconique.com'</span>, <span class="str">'$2y$12$...'</span>, <span class="str">'["ROLE_ADMIN"]'</span>, <span class="str">'Admin'</span>, <span class="str">'Test'</span>);</div>
+  </div>
+</div>
+
+<!-- Étape 5 -->
+<div class="step">
+  <div class="step-header">
+    <div class="step-num">5</div>
+    <div class="step-title">Colonne laste_name NOT NULL sans valeur par défaut</div>
+    <span class="step-tag">Schema</span>
+  </div>
+  <div class="step-body">
+    <div class="problem">T14 (register) — INSERT échoue : "Field 'laste_name' doesn't have a default value" (colonne dupliquée avec faute de frappe)</div>
+    <div class="solution">Ajout d'une valeur par défaut vide sur la colonne orpheline</div>
+    <div class="code-block">ALTER TABLE user MODIFY laste_name varchar(100) NOT NULL DEFAULT <span class="str">''</span>;</div>
+  </div>
+</div>
+
+<!-- Résultat final -->
+<div class="result-bar">
+  <div>
+    <div class="result-ok">OK</div>
+    <div class="result-detail">7 tests · 13 assertions · 0 failures · 0 errors</div>
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:13px; color:#a8e6cf;">Durée : 11.213 s · PHP 8.2.31</div>
+    <div style="font-size:13px; color:#a8e6cf;">T12 · T13 · T14 · T15 · T16 · T17 · T18 ✅</div>
+  </div>
+</div>
+
+</body>
+</html>

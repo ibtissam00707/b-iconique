@@ -7,6 +7,91 @@ body {
   margin: 0;
 }
 
+/* =============================================
+   RESPONSIVE — Mobile & Tablet
+   ============================================= */
+
+/* Navbar header : empile en colonne sur mobile */
+@media (max-width: 768px) {
+  /* Header principal */
+  header > div:first-child {
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 12px 16px !important;
+  }
+
+  /* Nav catégories : scroll horizontal */
+  header nav {
+    gap: 10px !important;
+    padding: 10px 12px !important;
+    overflow-x: auto;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Grille catalogue : 1 colonne */
+  .catalogue-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hero : hauteur réduite */
+  .hero-section {
+    height: 320px !important;
+  }
+
+  .hero-section h1 {
+    font-size: 32px !important;
+  }
+
+  /* ProductDetail : empile les colonnes */
+  .product-detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Commande : empile les colonnes */
+  .commande-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Admin tableau : scroll horizontal */
+  .admin-table-wrapper {
+    overflow-x: auto;
+  }
+
+  /* Padding général réduit */
+  .page-content {
+    padding: 20px 16px !important;
+  }
+
+  /* Bandeau promo */
+  .promo-banner {
+    font-size: 11px !important;
+    padding: 6px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Catégories homepage : 2 colonnes */
+  .categories-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Stats admin : pleine largeur */
+  .admin-stats > div {
+    min-width: 100% !important;
+  }
+
+  /* Boutons navigation pleine largeur */
+  .btn-full-mobile {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;

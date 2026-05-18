@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tests Backend — Après correction</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1e1e1e;
+    font-family: 'Consolas', 'Courier New', monospace;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .terminal-bar {
+    background: #3c3c3c;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #555;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-red { background: #ff5f56; }
+  .dot-yellow { background: #ffbd2e; }
+  .dot-green { background: #27c93f; }
+  .terminal-title {
+    color: #ccc;
+    font-size: 12px;
+    margin-left: 8px;
+    font-family: -apple-system, sans-serif;
+  }
+  .terminal-body {
+    padding: 20px 24px;
+    color: #f0f0f0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .gray { color: #aaa; }
+  .green { color: #06d6a0; }
+  .white { color: #f0f0f0; }
+  .bold { font-weight: bold; }
+  .section-title {
+    color: #fff;
+    background: #1a5c38;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .divider { border-top: 1px solid #444; margin: 16px 0; }
+  .ok-box {
+    background: #0d2e1f;
+    border: 1px solid #06d6a0;
+    padding: 14px 24px;
+    border-radius: 6px;
+    margin-top: 16px;
+    display: inline-block;
+    min-width: 360px;
+  }
+  .test-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0;
+    font-size: 12.5px;
+  }
+  .badge-ok {
+    background: #06d6a0;
+    color: #0d2e1f;
+    font-weight: bold;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    min-width: 28px;
+    text-align: center;
+  }
+  .test-name { color: #e0e0e0; }
+  .test-desc { color: #888; font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="terminal-bar">
+  <div class="dot dot-red"></div>
+  <div class="dot dot-yellow"></div>
+  <div class="dot dot-green"></div>
+  <span class="terminal-title">Terminal — docker exec b_iconique_backend php bin/phpunit</span>
+</div>
+<div class="terminal-body">
+  <div class="section-title">✅ APRÈS CORRECTIONS — TOUS LES TESTS PASSENT</div>
+
+  <div class="gray">$ docker exec b_iconique_backend php bin/phpunit</div>
+  <br>
+  <div><span class="white bold">PHPUnit 11.5.55</span> <span class="gray">by Sebastian Bergmann and contributors.</span></div>
+  <br>
+  <div class="gray">Runtime:       PHP 8.2.31</div>
+  <div class="gray">Configuration: /var/www/backend/phpunit.dist.xml</div>
+  <br>
+
+  <div>
+    <span class="green bold">.</span><span class="green bold">.</span><span class="green bold">.</span><span class="green bold">.</span><span class="green bold">.</span><span class="green bold">.</span><span class="green bold">.</span>
+    <span class="gray">                                                    7 / 7 (100%)</span>
+  </div>
+  <br>
+  <div class="gray">Time: 00:11.213, Memory: 24.00 MB</div>
+  <br>
+
+  <div class="divider"></div>
+
+  <div style="margin-left: 4px;">
+    <div class="test-row">
+      <span class="badge-ok">T12</span>
+      <span class="test-name">testGetProductsPublic</span>
+      <span class="test-desc">— GET /api/products → 200 ✓</span>
+    </div>
+    <div class="test-row">
+      <span class="badge-ok">T13</span>
+      <span class="test-name">testGetCategoriesPublic</span>
+      <span class="test-desc">— GET /api/categories → 200 ✓</span>
+    </div>
+    <div class="test-row">
+      <span class="badge-ok">T14</span>
+      <span class="test-name">testRegisterSuccess</span>
+      <span class="test-desc">— POST /api/register → 201 ✓</span>
+    </div>
+    <div class="test-row">
+      <span class="badge-ok">T15</span>
+      <span class="test-name">testLoginSuccess</span>
+      <span class="test-desc">— POST /api/login → token JWT ✓</span>
+    </div>
+    <div class="test-row">
+      <span class="badge-ok">T16</span>
+      <span class="test-name">testLoginWrongPassword</span>
+      <span class="test-desc">— Mauvais MDP → 401 ✓</span>
+    </div>
+    <div class="test-row">
+      <span class="badge-ok">T17</span>
+      <span class="test-name">testAdminWithoutToken</span>
+      <span class="test-desc">— Sans token → 401 ✓</span>
+    </div>
+    <div class="test-row">
+      <span class="badge-ok">T18</span>
+      <span class="test-name">testAdminAddProductWithToken</span>
+      <span class="test-desc">— Avec token admin → 201 ✓</span>
+    </div>
+  </div>
+
+  <br>
+  <div class="ok-box">
+    <span class="green bold" style="font-size:15px;">OK</span>
+    <span class="gray">  (7 tests, 13 assertions)</span>
+  </div>
+</div>
+</body>
+</html>

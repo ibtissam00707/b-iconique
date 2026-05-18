@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import api from '../api';
 import { useCart } from '../context/CartContext';
 import { useFavoris } from '../context/FavorisContext';
@@ -14,6 +14,7 @@ function Catalogue() {
   const { toggleFavori, isFavori } = useFavoris();
   const [searchParams] = useSearchParams();
   const categorieFiltre = searchParams.get('categorie');
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     api.get('/api/products')
@@ -30,13 +31,20 @@ function Catalogue() {
       });
   }, []);
 
-  const produitsFiltres = categorieFiltre
+  const produitsParCategorie = categorieFiltre
     ? products.filter(p =>
         p.category?.toLowerCase().normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
           .replace(/['\s]/g, "-") === categorieFiltre.toLowerCase()
       )
     : products;
+
+  const produitsFiltres = search.trim()
+    ? produitsParCategorie.filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        (p.description || '').toLowerCase().includes(search.toLowerCase())
+      )
+    : produitsParCategorie;
 
   if (loading) return (
     <div style={{ textAlign: 'center', padding: '80px', fontFamily: 'Georgia, serif', color: 'var(--color-text-light)' }}>
@@ -77,6 +85,32 @@ function Catalogue() {
           ? categorieFiltre.charAt(0).toUpperCase() + categorieFiltre.slice(1).replace(/-/g, ' ')
           : 'Tous nos bijoux'}
       </h1>
+
+      {/* Barre de recherche */}
+      <div style={{ display: 'flex', justifyContent: 'center', margin: '16px 0 8px' }}>
+        <div style={{ position: 'relative', width: '100%', maxWidth: '420px' }}>
+          <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '16px', color: 'var(--color-text-light)' }}>🔍</span>
+          <input
+            type="text"
+            placeholder="Rechercher un bijou..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              width: '100%', padding: '11px 16px 11px 40px',
+              border: '1px solid var(--color-border)', borderRadius: '30px',
+              fontFamily: 'Georgia, serif', fontSize: '14px',
+              boxSizing: 'border-box', outline: 'none',
+              background: 'white'
+            }}
+          />
+          {search && (
+            <button onClick={() => setSearch('')}
+              style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-light)', fontSize: '16px' }}>
+              ×
+            </button>
+          )}
+        </div>
+      </div>
 
       <p style={{
         color: 'var(--color-text-light)',
@@ -214,9 +248,11 @@ function Catalogue() {
               </div>
 
               <div style={{ padding: '16px 18px 20px' }}>
-                <h3 style={{ margin: '0 0 6px', fontSize: '15px', fontWeight: 'normal', color: 'var(--color-text)' }}>
-                  {product.name}
-                </h3>
+                <Link to={`/produit/${product.id}`} style={{ textDecoration: 'none' }}>
+                  <h3 style={{ margin: '0 0 6px', fontSize: '15px', fontWeight: 'normal', color: 'var(--color-text)' }}>
+                    {product.name}
+                  </h3>
+                </Link>
 
                 <p style={{ color: 'var(--color-text-light)', fontSize: '12px', marginBottom: '12px', lineHeight: '1.5' }}>
                   {product.description}

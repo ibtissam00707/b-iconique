@@ -7,6 +7,7 @@ import Panier from './pages/Panier';
 import Commande from './pages/Commande';
 import Admin from './pages/Admin';
 import Favoris from './pages/Favoris';
+import ProductDetail from './pages/ProductDetail';
 import NotFound from './pages/NotFound';
 import FAQ from './pages/FAQ';
 import PolitiqueRetour from './pages/PolitiqueRetour';
@@ -284,6 +285,7 @@ function App() {
             <Route path="/commande" element={<Commande />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/favoris" element={<Favoris />} />
+            <Route path="/produit/:id" element={<ProductDetail />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/politique-retour" element={<PolitiqueRetour />} />
             <Route path="/politique-confidentialite" element={<PolitiqueConfidentialite />} />

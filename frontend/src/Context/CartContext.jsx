@@ -8,8 +8,8 @@ export function useCart() {
 }
 
 function getCartKey() {
-  const k = getUserKey();
-  return k ? `cart_${k}` : 'cart_guest';
+  const k = getUserKey('cart');
+  return k || 'cart_guest';
 }
 
 export function CartProvider({ children }) {

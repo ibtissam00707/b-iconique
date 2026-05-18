@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tests Backend — Avant correction</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1e1e1e;
+    font-family: 'Consolas', 'Courier New', monospace;
+    padding: 0;
+    min-height: 100vh;
+  }
+  .terminal-bar {
+    background: #3c3c3c;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #555;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-red { background: #ff5f56; }
+  .dot-yellow { background: #ffbd2e; }
+  .dot-green { background: #27c93f; }
+  .terminal-title {
+    color: #ccc;
+    font-size: 12px;
+    margin-left: 8px;
+    font-family: -apple-system, sans-serif;
+  }
+  .terminal-body {
+    padding: 20px 24px;
+    color: #f0f0f0;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .cmd { color: #7ec8e3; }
+  .gray { color: #aaa; }
+  .red { color: #ff6b6b; }
+  .yellow { color: #ffd166; }
+  .green { color: #06d6a0; }
+  .white { color: #f0f0f0; }
+  .bold { font-weight: bold; }
+  .section-title {
+    color: #fff;
+    background: #8B2635;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .divider { border-top: 1px solid #444; margin: 16px 0; }
+  .fail-box {
+    background: #2d1a1a;
+    border-left: 4px solid #ff6b6b;
+    padding: 12px 16px;
+    margin: 10px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .summary-box {
+    background: #2d1a1a;
+    border: 1px solid #ff6b6b;
+    padding: 12px 20px;
+    border-radius: 6px;
+    margin-top: 16px;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+<div class="terminal-bar">
+  <div class="dot dot-red"></div>
+  <div class="dot dot-yellow"></div>
+  <div class="dot dot-green"></div>
+  <span class="terminal-title">Terminal — docker exec b_iconique_backend php bin/phpunit</span>
+</div>
+<div class="terminal-body">
+  <div class="section-title">❌ ÉTAT INITIAL — AVANT CORRECTIONS</div>
+
+  <div class="gray">$ docker exec b_iconique_backend php bin/phpunit</div>
+  <br>
+  <div><span class="white bold">PHPUnit 11.5.55</span> <span class="gray">by Sebastian Bergmann and contributors.</span></div>
+  <br>
+  <div class="gray">Runtime:       PHP 8.2.31</div>
+  <div class="gray">Configuration: /var/www/backend/phpunit.dist.xml</div>
+  <br>
+
+  <div class="fail-box">
+    <div class="red bold">[critical] Uncaught PHP Exception</div>
+    <div class="red">Doctrine\DBAL\Exception\ConnectionException:</div>
+    <div class="yellow">"An exception occurred in the driver:</div>
+    <div class="yellow"> SQLSTATE[HY000] [1049] Unknown database <span class="red bold">'b_iconique_test'</span>"</div>
+    <div class="gray" style="margin-top:6px; font-size:12px;">at ExceptionConverter.php line 91</div>
+  </div>
+
+  <br>
+  <div><span class="red bold">F</span><span class="red bold">F</span><span class="red bold">F</span><span class="red bold">F</span><span class="red bold">F</span><span class="red bold">F</span><span class="white">.</span><span class="gray">                                                    7 / 7 (100%)</span></div>
+  <br>
+  <div class="gray">Time: 00:40.164, Memory: 40.50 MB</div>
+  <br>
+
+  <div class="divider"></div>
+
+  <div class="red bold">There were 6 failures:</div>
+  <br>
+
+  <div style="margin-left: 8px;">
+    <div class="red">1) AuthControllerTest::testGetProductsPublic</div>
+    <div class="gray" style="font-size:12px; margin-left:16px;">→ Response 500 — Unknown database 'b_iconique_test'</div>
+    <br>
+    <div class="red">2) AuthControllerTest::testGetCategoriesPublic</div>
+    <div class="gray" style="font-size:12px; margin-left:16px;">→ Response 500 — Unknown database 'b_iconique_test'</div>
+    <br>
+    <div class="red">3) AuthControllerTest::testRegisterSuccess</div>
+    <div class="gray" style="font-size:12px; margin-left:16px;">→ Expected 201, got 500 — Unknown database 'b_iconique_test'</div>
+    <br>
+    <div class="red">4) AuthControllerTest::testLoginSuccess</div>
+    <div class="gray" style="font-size:12px; margin-left:16px;">→ Response 500 — Unknown database 'b_iconique_test'</div>
+    <br>
+    <div class="red">5) AuthControllerTest::testAdminWithoutToken</div>
+    <div class="gray" style="font-size:12px; margin-left:16px;">→ Expected 401, got 500 — Unknown database 'b_iconique_test'</div>
+    <br>
+    <div class="red">6) AuthControllerTest::testAdminAddProductWithToken</div>
+    <div class="gray" style="font-size:12px; margin-left:16px;">→ Expected 201, got 500 — Unknown database 'b_iconique_test'</div>
+  </div>
+
+  <br>
+  <div class="summary-box">
+    <span class="red bold">FAILURES!</span>
+    <span class="gray">  Tests: 7,  Assertions: 1,  </span>
+    <span class="red bold">Failures: 6</span>
+  </div>
+
+  <br><br>
+  <div class="yellow">Cause racine : la base de données de test <span class="red bold">b_iconique_test</span> n'existe pas.</div>
+  <div class="yellow">Le fichier <span class="white">.env.test</span> ne contient pas de <span class="white">DATABASE_URL</span> pour l'environnement Docker.</div>
+</div>
+</body>
+</html>

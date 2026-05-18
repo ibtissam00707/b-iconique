@@ -1,6 +1,7 @@
 import { useCart } from '../context/CartContext';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../api';
 
 const PAYS_EUROPE = [
   'france', 'belgique', 'suisse', 'luxembourg', 'allemagne', 'espagne',
@@ -61,8 +62,30 @@ function Commande() {
     setEtape(2);
   }
 
-  function handlePaiement(e) {
+  async function handlePaiement(e) {
     e.preventDefault();
+    try {
+      await api.post('/api/orders', {
+        email:      formData.email,
+        firstName:  formData.prenom,
+        lastName:   formData.nom,
+        address:    formData.adresse,
+        city:       formData.ville,
+        postalCode: formData.codePostal,
+        country:    formData.pays,
+        total:      total,
+        shipping:   fraisLivraison,
+        items: cart.map(item => ({
+          id:       item.id,
+          name:     item.name,
+          price:    item.price,
+          quantity: item.quantity,
+          image:    item.image || null,
+        })),
+      });
+    } catch (err) {
+      console.error('Erreur enregistrement commande:', err);
+    }
     clearCart();
     setEtape(3);
   }

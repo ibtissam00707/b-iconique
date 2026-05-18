@@ -8,7 +8,7 @@ export function useFavoris() {
 }
 
 function getKey() {
-  return getUserKey() || 'favoris_guest';
+  return getUserKey('favoris') || 'favoris_guest';
 }
 
 export function FavorisProvider({ children }) {
